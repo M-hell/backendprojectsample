@@ -21,4 +21,13 @@ app.use(express.static("public")) //if images or other componenets are stored in
 //suppose the user logs in, they don't have to re login for second time
 app.use(cookieParser())
 
+
+//routes import 
+import userRouter from './routes/user.routes.js'
+
+
+//routes declaration
+app.use("/api/v1/users",userRouter);
+
+
 export default app;
