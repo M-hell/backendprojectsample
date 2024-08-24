@@ -241,7 +241,7 @@ const updateUsername = asyncHandler (async(req,res)=>{
     if(!email || !password || !newUsername){
         throw new ApiError(401,"All fields are required");
     }
-    const user=await User.findOne({email});
+    const user=await User.findOne({email}); // we could have got user from middleware as well in req.user
     
     if(!user){
         throw new ApiError(401,"user not found");
@@ -289,5 +289,32 @@ const updatePassword = asyncHandler (async(req,res)=>{
 
 })
 
+const updateUserAvatar = asyncHandler(async(req, res) => {
+    const avatarLocalPath = req.file?.path
 
-export {registerUser,loginUser,logoutUser,refreshAccessToken,updateUsername,updatePassword};
+    if (!avatarLocalPath) {
+        throw new ApiError(400, "Avatar file is missing")
+    }
+
+    //TODO: delete old image - assignment
+
+    const avatar = await uploadOnCloudinary(avatarLocalPath)
+
+    if (!avatar.url) {
+        throw new ApiError(400, "Error while uploading on avatar")
+        
+    }
+})
+
+const getCurrentUser = asyncHandler(async(req, res) => {
+    return res
+    .status(200)
+    .json(new ApiResponse(
+        200,
+        req.user,
+        "User fetched successfully"
+    ))
+})
+
+
+export {registerUser,loginUser,logoutUser,refreshAccessToken,updateUsername,updatePassword,updateUserAvatar,getCurrentUser};
